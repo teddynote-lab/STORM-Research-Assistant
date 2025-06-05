@@ -1,7 +1,7 @@
 {
   "dependencies": ["."],
   "graphs": {
-    "agent": "./src/react_agent/graph.py:graph"
+    "storm_research": "./src/storm_research/graph.py:graph"
   },
   "env": ".env"
 }

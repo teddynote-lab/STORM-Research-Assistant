@@ -163,3 +163,16 @@ cython_debug/
 #.idea/
 
 .langgraph_api
+
+# LangGraph Studio
+.langgraph/
+
+# LangSmith
+.langsmith/
+
+# Project specific
+*.db
+*.sqlite
+output/
+temp/
+logs/

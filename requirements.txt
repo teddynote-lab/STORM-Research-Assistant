@@ -1,0 +1,19 @@
+# STORM Research Assistant Requirements
+# uv를 사용하는 경우 pyproject.toml을 참고하세요
+
+# Core dependencies
+langgraph>=0.2.6
+langchain>=0.2.14
+langchain-openai>=0.1.22
+langchain-anthropic>=0.1.23
+langchain-community>=0.2.0
+langchain-tavily>=0.1
+pydantic>=2.0.0
+python-dotenv>=1.0.1
+arxiv>=2.1.0
+
+# Development dependencies
+pytest>=8.3.5
+mypy>=1.11.1
+ruff>=0.6.1
+langgraph-cli[inmem]>=0.1.71

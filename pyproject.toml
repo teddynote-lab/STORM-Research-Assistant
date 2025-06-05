@@ -1,9 +1,9 @@
 [project]
-name = "react-agent"
-version = "0.0.1"
-description = "Starter template for making a custom Reasoning and Action agent (using tool calling) in LangGraph."
+name = "storm-research-assistant"
+version = "0.1.0"
+description = "STORM Research Assistant - Multi-perspective AI research system using LangGraph"
 authors = [
-    { name = "William Fu-Hinthorn", email = "13333726+hinthornw@users.noreply.github.com" },
+    { name = "LangGraph Template User", email = "user@example.com" },
 ]
 readme = "README.md"
 license = { text = "MIT" }
@@ -13,9 +13,12 @@ dependencies = [
     "langchain-openai>=0.1.22",
     "langchain-anthropic>=0.1.23",
     "langchain>=0.2.14",
-    "langchain-fireworks>=0.1.7",
+    "langchain-community>=0.2.0",
     "python-dotenv>=1.0.1",
     "langchain-tavily>=0.1",
+    "arxiv>=2.1.0",
+    "pydantic>=2.0.0",
+    "pymupdf>=1.26.0",
 ]
 
 
@@ -27,10 +30,10 @@ requires = ["setuptools>=73.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["langgraph.templates.react_agent", "react_agent"]
+packages = ["langgraph.templates.storm_research", "storm_research"]
 [tool.setuptools.package-dir]
-"langgraph.templates.react_agent" = "src/react_agent"
-"react_agent" = "src/react_agent"
+"langgraph.templates.storm_research" = "src/storm_research"
+"storm_research" = "src/storm_research"
 
 
 [tool.setuptools.package-data]

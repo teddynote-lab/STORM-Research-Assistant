@@ -1,241 +1,193 @@
-# LangGraph ReAct Agent Template
+# 🌪️ STORM Research Assistant
 
-[![CI](https://github.com/langchain-ai/react-agent/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/langchain-ai/react-agent/actions/workflows/unit-tests.yml)
-[![Integration Tests](https://github.com/langchain-ai/react-agent/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/langchain-ai/react-agent/actions/workflows/integration-tests.yml)
-[![Open in - LangGraph Studio](https://img.shields.io/badge/Open_in-LangGraph_Studio-00324d.svg?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NS4zMzMiIGhlaWdodD0iODUuMzMzIiB2ZXJzaW9uPSIxLjAiIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZD0iTTEzIDcuOGMtNi4zIDMuMS03LjEgNi4zLTYuOCAyNS43LjQgMjQuNi4zIDI0LjUgMjUuOSAyNC41QzU3LjUgNTggNTggNTcuNSA1OCAzMi4zIDU4IDcuMyA1Ni43IDYgMzIgNmMtMTIuOCAwLTE2LjEuMy0xOSAxLjhtMzcuNiAxNi42YzIuOCAyLjggMy40IDQuMiAzLjQgNy42cy0uNiA0LjgtMy40IDcuNkw0Ny4yIDQzSDE2LjhsLTMuNC0zLjRjLTQuOC00LjgtNC44LTEwLjQgMC0xNS4ybDMuNC0zLjRoMzAuNHoiLz48cGF0aCBkPSJNMTguOSAyNS42Yy0xLjEgMS4zLTEgMS43LjQgMi41LjkuNiAxLjcgMS44IDEuNyAyLjcgMCAxIC43IDIuOCAxLjYgNC4xIDEuNCAxLjkgMS40IDIuNS4zIDMuMi0xIC42LS42LjkgMS40LjkgMS41IDAgMi43LS41IDIuNy0xIDAtLjYgMS4xLS44IDIuNi0uNGwyLjYuNy0xLjgtMi45Yy01LjktOS4zLTkuNC0xMi4zLTExLjUtOS44TTM5IDI2YzAgMS4xLS45IDIuNS0yIDMuMi0yLjQgMS41LTIuNiAzLjQtLjUgNC4yLjguMyAyIDEuNyAyLjUgMy4xLjYgMS41IDEuNCAyLjMgMiAyIDEuNS0uOSAxLjItMy41LS40LTMuNS0yLjEgMC0yLjgtMi44LS44LTMuMyAxLjYtLjQgMS42LS41IDAtLjYtMS4xLS4xLTEuNS0uNi0xLjItMS42LjctMS43IDMuMy0yLjEgMy41LS41LjEuNS4yIDEuNi4zIDIuMiAwIC43LjkgMS40IDEuOSAxLjYgMi4xLjQgMi4zLTIuMy4yLTMuMi0uOC0uMy0yLTEuNy0yLjUtMy4xLTEuMS0zLTMtMy4zLTMtLjUiLz48L3N2Zz4=)](https://langgraph-studio.vercel.app/templates/open?githubUrl=https://github.com/langchain-ai/react-agent)
+> **STORM**(Synthesis of Topic Outline through Retrieval and Multi-perspective question asking) 개념을 활용한 AI 연구 보조 시스템
 
-This template showcases a [ReAct agent](https://arxiv.org/abs/2210.03629) implemented using [LangGraph](https://github.com/langchain-ai/langgraph), designed for [LangGraph Studio](https://github.com/langchain-ai/langgraph-studio). ReAct agents are uncomplicated, prototypical agents that can be flexibly extended to many tools.
+## 📖 소개
 
-![Graph view in LangGraph studio UI](./static/studio_ui.png)
+STORM Research Assistant는 복잡한 주제에 대해 심층적인 연구 보고서를 자동으로 생성하는 LangGraph 기반 애플리케이션입니다. 여러 관점을 가진 AI 분석가들이 전문가와 인터뷰를 진행하고, 웹과 학술 자료를 검색하여 종합적인 연구 보고서를 작성합니다.
 
-The core logic, defined in `src/react_agent/graph.py`, demonstrates a flexible ReAct agent that iteratively reasons about user queries and executes actions, showcasing the power of this approach for complex problem-solving tasks.
+### 🎯 주요 특징
 
-## What it does
+- **🤖 다중 관점 분석**: 다양한 배경과 전문성을 가진 AI 분석가들이 연구에 참여
+- **💬 동적 인터뷰**: 각 분석가가 전문가와 심층 인터뷰 진행
+- **🔍 통합 검색**: Tavily(웹 검색)와 ArXiv(학술 논문) 동시 활용
+- **📊 병렬 처리**: 여러 인터뷰를 동시에 진행하여 효율성 극대화
+- **✏️ 자동 보고서 생성**: 서론, 본문, 결론을 포함한 완성도 높은 보고서 작성
+- **🔄 사용자 피드백**: 분석가 생성 단계에서 사용자 개입 가능
 
-The ReAct agent:
+## 🏗️ 아키텍처
 
-1. Takes a user **query** as input
-2. Reasons about the query and decides on an action
-3. Executes the chosen action using available tools
-4. Observes the result of the action
-5. Repeats steps 2-4 until it can provide a final answer
+### 시스템 구조
 
-By default, it's set up with a basic set of tools, but can be easily extended with custom tools to suit various use cases.
+```
+📁 src/storm_research/
+├── 📄 __init__.py          # 패키지 초기화
+├── 🧠 graph.py            # LangGraph 그래프 정의 (메인 로직)
+├── 📊 state.py            # 상태 및 데이터 모델 정의
+├── 💬 prompts.py          # 프롬프트 템플릿
+├── ⚙️ configuration.py     # 시스템 설정 관리
+├── 🔧 tools.py            # 검색 도구 구현
+└── 🛠️ utils.py            # 유틸리티 함수
+```
 
-## Getting Started
+### 워크플로우
 
-Assuming you have already [installed LangGraph Studio](https://github.com/langchain-ai/langgraph-studio?tab=readme-ov-file#download), to set up:
+```mermaid
+graph TD
+    A[시작] --> B[분석가 생성]
+    B --> C{사용자 피드백}
+    C -->|피드백 있음| B
+    C -->|피드백 없음| D[병렬 인터뷰 시작]
+    D --> E1[분석가1 인터뷰]
+    D --> E2[분석가2 인터뷰]
+    D --> E3[분석가3 인터뷰]
+    E1 --> F1[질문 생성]
+    F1 --> G1[웹/ArXiv 검색]
+    G1 --> H1[답변 생성]
+    H1 -->|추가 질문| F1
+    H1 -->|완료| I1[섹션 작성]
+    I1 --> J[보고서 통합]
+    J --> K[서론 작성]
+    J --> L[결론 작성]
+    K --> M[최종 보고서]
+    L --> M
+    M --> N[종료]
+```
 
-1. Create a `.env` file.
+## 🚀 설치 및 실행
+
+### 1. 환경 설정
 
 ```bash
-cp .env.example .env
+# uv를 사용한 환경 설정
+uv venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# 의존성 설치
+uv pip install -e .
 ```
 
-2. Define required API keys in your `.env` file.
+### 2. 환경 변수 설정
 
-The primary [search tool](./src/react_agent/tools.py) [^1] used is [Tavily](https://tavily.com/). Create an API key [here](https://app.tavily.com/sign-in).
+`.env` 파일을 생성하고 다음 API 키를 설정하세요:
 
-<!--
-Setup instruction auto-generated by `langgraph template lock`. DO NOT EDIT MANUALLY.
--->
+```env
+# 필수 API 키
+OPENAI_API_KEY=your_openai_key
+TAVILY_API_KEY=your_tavily_key
 
-### Setup Model
-
-The defaults values for `model` are shown below:
-
-```yaml
-model: anthropic/claude-3-5-sonnet-20240620
+# 선택적 (Anthropic 모델 사용 시)
+ANTHROPIC_API_KEY=your_anthropic_key
 ```
 
-Follow the instructions below to get set up, or pick one of the additional options.
+### 3. LangGraph Studio 실행
 
-#### Anthropic
+```bash
+# LangGraph Studio 설치 (처음 한 번만)
+pip install langgraph-cli
 
-To use Anthropic's chat models:
-
-1. Sign up for an [Anthropic API key](https://console.anthropic.com/) if you haven't already.
-2. Once you have your API key, add it to your `.env` file:
-
-```
-ANTHROPIC_API_KEY=your-api-key
-```
-#### OpenAI
-
-To use OpenAI's chat models:
-
-1. Sign up for an [OpenAI API key](https://platform.openai.com/signup).
-2. Once you have your API key, add it to your `.env` file:
-```
-OPENAI_API_KEY=your-api-key
+# Studio 실행
+langgraph up
 ```
 
+## 📝 사용 방법
 
+### 기본 사용법
 
+```python
+from storm_research import graph
+from langchain_core.runnables import RunnableConfig
 
-
-<!--
-End setup instructions
--->
-
-
-3. Customize whatever you'd like in the code.
-4. Open the folder LangGraph Studio!
-
-## How to customize
-
-1. **Add new tools**: Extend the agent's capabilities by adding new tools in [tools.py](./src/react_agent/tools.py). These can be any Python functions that perform specific tasks.
-2. **Select a different model**: We default to Anthropic's Claude 3 Sonnet. You can select a compatible chat model using `provider/model-name` via configuration. Example: `openai/gpt-4-turbo-preview`.
-3. **Customize the prompt**: We provide a default system prompt in [prompts.py](./src/react_agent/prompts.py). You can easily update this via configuration in the studio.
-
-You can also quickly extend this template by:
-
-- Modifying the agent's reasoning process in [graph.py](./src/react_agent/graph.py).
-- Adjusting the ReAct loop or adding additional steps to the agent's decision-making process.
-
-## Development
-
-While iterating on your graph, you can edit past state and rerun your app from past states to debug specific nodes. Local changes will be automatically applied via hot reload. Try adding an interrupt before the agent calls tools, updating the default system message in `src/react_agent/configuration.py` to take on a persona, or adding additional nodes and edges!
-
-Follow up requests will be appended to the same thread. You can create an entirely new thread, clearing previous history, using the `+` button in the top right.
-
-You can find the latest (under construction) docs on [LangGraph](https://github.com/langchain-ai/langgraph) here, including examples and other references. Using those guides can help you pick the right patterns to adapt here for your use case.
-
-LangGraph Studio also integrates with [LangSmith](https://smith.langchain.com/) for more in-depth tracing and collaboration with teammates.
-
-[^1]: https://python.langchain.com/docs/concepts/#tools
-
-<!--
-Configuration auto-generated by `langgraph template lock`. DO NOT EDIT MANUALLY.
-{
-  "config_schemas": {
-    "agent": {
-      "type": "object",
-      "properties": {
-        "model": {
-          "type": "string",
-          "default": "anthropic/claude-3-5-sonnet-20240620",
-          "description": "The name of the language model to use for the agent's main interactions. Should be in the form: provider/model-name.",
-          "environment": [
-            {
-              "value": "anthropic/claude-1.2",
-              "variables": "ANTHROPIC_API_KEY"
-            },
-            {
-              "value": "anthropic/claude-2.0",
-              "variables": "ANTHROPIC_API_KEY"
-            },
-            {
-              "value": "anthropic/claude-2.1",
-              "variables": "ANTHROPIC_API_KEY"
-            },
-            {
-              "value": "anthropic/claude-3-5-sonnet-20240620",
-              "variables": "ANTHROPIC_API_KEY"
-            },
-            {
-              "value": "anthropic/claude-3-haiku-20240307",
-              "variables": "ANTHROPIC_API_KEY"
-            },
-            {
-              "value": "anthropic/claude-3-opus-20240229",
-              "variables": "ANTHROPIC_API_KEY"
-            },
-            {
-              "value": "anthropic/claude-3-sonnet-20240229",
-              "variables": "ANTHROPIC_API_KEY"
-            },
-            {
-              "value": "anthropic/claude-instant-1.2",
-              "variables": "ANTHROPIC_API_KEY"
-            },
-            {
-              "value": "openai/gpt-3.5-turbo",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-3.5-turbo-0125",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-3.5-turbo-0301",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-3.5-turbo-0613",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-3.5-turbo-1106",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-3.5-turbo-16k",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-3.5-turbo-16k-0613",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-0125-preview",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-0314",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-0613",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-1106-preview",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-32k",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-32k-0314",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-32k-0613",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-turbo",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-turbo-preview",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4-vision-preview",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4o",
-              "variables": "OPENAI_API_KEY"
-            },
-            {
-              "value": "openai/gpt-4o-mini",
-              "variables": "OPENAI_API_KEY"
-            }
-          ]
-        }
-      },
-      "environment": [
-        "TAVILY_API_KEY"
-      ]
+# 설정
+config = RunnableConfig(
+    configurable={
+        "thread_id": "research-001",
+        "model": "openai/gpt-4o",
+        "max_analysts": 3,
+        "max_interview_turns": 3,
     }
-  }
+)
+
+# 연구 시작
+inputs = {
+    "topic": "LangGraph의 장점과 실제 활용 사례",
+    "max_analysts": 3
 }
--->
+
+# 실행 (첫 번째 단계: 분석가 생성)
+result = await graph.ainvoke(inputs, config)
+
+# 사용자 피드백 제공 (선택적)
+await graph.aupdate_state(
+    config,
+    {"human_analyst_feedback": "AI 윤리 전문가를 추가해주세요"},
+    as_node="human_feedback"
+)
+
+# 연구 완료
+final_result = await graph.ainvoke(None, config)
+print(final_result["final_report"])
+```
+
+### 설정 옵션
+
+| 설정 | 기본값 | 설명 |
+|------|--------|------|
+| `model` | `openai/gpt-4o` | 사용할 LLM 모델 |
+| `max_analysts` | 3 | 생성할 분석가 수 |
+| `max_interview_turns` | 3 | 인터뷰 최대 턴 수 |
+| `tavily_max_results` | 3 | Tavily 검색 결과 수 |
+| `arxiv_max_docs` | 3 | ArXiv 검색 문서 수 |
+| `parallel_interviews` | `True` | 병렬 인터뷰 실행 여부 |
+
+## 🧪 테스트
+
+```bash
+# 단위 테스트 실행
+make test
+
+# 특정 테스트 파일 실행
+make test TEST_FILE=tests/unit_tests/test_configuration.py
+
+# 통합 테스트
+python -m pytest tests/integration_tests/
+```
+
+## 📚 예제
+
+### 기술 리서치
+```python
+topic = "차세대 AI 아키텍처: Transformer를 넘어서"
+```
+
+### 비즈니스 분석
+```python
+topic = "2024년 한국 스타트업 생태계 분석과 투자 트렌드"
+```
+
+### 학술 연구
+```python
+topic = "양자 컴퓨팅이 암호화 기술에 미치는 영향"
+```
+
+## 🤝 기여하기
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 라이선스
+
+이 프로젝트는 MIT 라이선스를 따릅니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참고하세요.
+
+## 🙏 감사의 말
+
+- Stanford의 STORM 논문에서 영감을 받았습니다
+- LangGraph 팀의 훌륭한 프레임워크에 감사드립니다
+- Tavily와 ArXiv API를 제공해주신 팀들께 감사드립니다
+
+---
+
+**Made with ❤️ using LangGraph**
