@@ -129,7 +129,7 @@ pip install langgraph-cli
 uv run langgraph dev
 ```
 
-Access the studio at `http://localhost:8123`
+Access the studio at `http://localhost:2024`
 
 ## 📝 Usage
 
@@ -222,53 +222,6 @@ Generated analysts might include:
 - Error Correction Specialist
 - Hardware Implementation Expert
 
-## 🧪 Testing
-
-```bash
-# Run all tests
-make test
-
-# Run unit tests only
-python -m pytest tests/unit_tests/
-
-# Run specific test file
-make test TEST_FILE=tests/unit_tests/test_configuration.py
-
-# Run with coverage
-python -m pytest --cov=storm_research tests/
-
-# Run integration tests
-python -m pytest tests/integration_tests/
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### Development Setup
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Add tests for your changes
-5. Ensure all tests pass (`make test`)
-6. Run linting (`make lint`)
-7. Commit your changes (`git commit -m 'Add amazing feature'`)
-8. Push to the branch (`git push origin feature/amazing-feature`)
-9. Open a Pull Request
-
-### Code Style
-
-This project uses:
-- **Black** for code formatting
-- **isort** for import sorting
-- **flake8** for linting
-- **mypy** for type checking
-
-Run all checks with:
-```bash
-make lint
-```
 
 ## 📄 License
 
