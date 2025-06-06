@@ -329,7 +329,7 @@ Create a comprehensive report with the following enhanced sections:
 **Note**: Your report should demonstrate the analytical sophistication and insight depth expected in leading academic journals and high-impact industry publications. Focus on generating novel understanding rather than simply aggregating information.
 
 [Note]
-- Write your response in English(including the title and section headers).
+- Write your response in same language as the topic(including the title and section headers).
 - Write your answer in professional, academic tone.
 """
 
@@ -357,6 +357,6 @@ For your conclusion, use ## Conclusion as the section header.
 Here are the sections to reflect on for writing: {formatted_str_sections}
 
 [Note]
-- Write your response in English(including the title and section headers).
+- Write your response in same language as the topic(including the title and section headers).
 - Write your answer in professional, academic tone.
 """
