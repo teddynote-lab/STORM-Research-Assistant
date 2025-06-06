@@ -100,6 +100,10 @@ uv pip install -e ".[dev]"
 Create a `.env` file in the root directory and configure the following API keys:
 
 ```env
+# LangSmith for tracing
+LANGSMITH_PROJECT=STORM-Research-Assistant
+LANGSMITH_API_KEY=your_langsmith_api_key
+
 # Required API Keys
 TAVILY_API_KEY=your_tavily_api_key
 
@@ -113,17 +117,13 @@ ANTHROPIC_API_KEY=your_anthropic_api_key
 # Azure OpenAI
 AZURE_OPENAI_API_KEY=your_azure_openai_api_key
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-
-# Optional: LangSmith for tracing
-LANGSMITH_PROJECT=STORM-Research-Assistant
-LANGSMITH_API_KEY=your_langsmith_api_key
 ```
 
 ### 4. Running LangGraph Studio
 
 ```bash
 # Install LangGraph CLI (one-time setup)
-pip install langgraph-cli
+pip install "langgraph-cli[inmem]"
 
 # Run LangGraph Studio
 uv run langgraph dev
@@ -143,7 +143,7 @@ from langchain_core.runnables import RunnableConfig
 config = RunnableConfig(
     configurable={
         "thread_id": "research-001",
-        "model": "azure_openai/gpt-4.1",  # Default model
+        "model": "openai/gpt-4.1",  # Setup model
         "max_analysts": 3,
         "max_interview_turns": 3,
     }
