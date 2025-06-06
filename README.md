@@ -94,7 +94,7 @@ AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 pip install langgraph-cli
 
 # Studio 실행
-langgraph up
+uv run langgraph dev
 ```
 
 ## 📝 사용 방법
@@ -152,19 +152,6 @@ print(final_result["final_report"])
 - **OpenAI**: `openai/gpt-4`, `openai/gpt-4-turbo` 등
 - **Anthropic**: `anthropic/claude-3-5-sonnet-20240620` 등
 
-## 🧪 테스트
-
-```bash
-# 단위 테스트 실행
-make test
-
-# 특정 테스트 파일 실행
-make test TEST_FILE=tests/unit_tests/test_configuration.py
-
-# 통합 테스트
-python -m pytest tests/integration_tests/
-```
-
 ## 📚 예제
 
 ### 기술 리서치
@@ -182,23 +169,27 @@ topic = "2024년 한국 스타트업 생태계 분석과 투자 트렌드"
 topic = "양자 컴퓨팅이 암호화 기술에 미치는 영향"
 ```
 
-## 🤝 기여하기
+## 🧪 테스트
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+```bash
+# 단위 테스트 실행
+make test
+
+# 특정 테스트 파일 실행
+make test TEST_FILE=tests/unit_tests/test_configuration.py
+
+# 통합 테스트
+python -m pytest tests/integration_tests/
+```
 
 ## 📄 라이선스
 
 이 프로젝트는 MIT 라이선스를 따릅니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참고하세요.
 
-## 🙏 감사의 말
+## 🙏 References
 
 - Stanford의 STORM 논문에서 영감을 받았습니다
-- LangGraph 팀의 훌륭한 프레임워크에 감사드립니다
-- Tavily와 ArXiv API를 제공해주신 팀들께 감사드립니다
+- 출처: https://github.com/teddylee777/langchain-kr/blob/main/17-LangGraph/03-Use-Cases/10-LangGraph-Research-Assistant.ipynb
 
 ---
 
