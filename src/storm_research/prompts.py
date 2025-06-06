@@ -70,7 +70,7 @@ When answering questions, follow these guidelines:
         
 [1] assistant/docs/llama3_1.pdf, page 7 
         
-And skip the addition of the brackets as well as the Document source preamble in your citation."""
+And skip the addition of the brackets as well as the Document source preamble in your citation"""
 
 
 SEARCH_INSTRUCTIONS = """You will be given a conversation between an analyst and an expert. 
@@ -326,7 +326,12 @@ Create a comprehensive report with the following enhanced sections:
 **Source Material for Analysis**:
 {context}
 
-**Note**: Your report should demonstrate the analytical sophistication and insight depth expected in leading academic journals and high-impact industry publications. Focus on generating novel understanding rather than simply aggregating information."""
+**Note**: Your report should demonstrate the analytical sophistication and insight depth expected in leading academic journals and high-impact industry publications. Focus on generating novel understanding rather than simply aggregating information.
+
+[Note]
+- Write your response in Korean(including the title and section headers).
+- Write your answer in professional, academic tone.
+"""
 
 
 INTRO_CONCLUSION_INSTRUCTIONS = """You are a technical writer finishing a report on {topic}
@@ -349,4 +354,9 @@ For your introduction, use ## Introduction as the section header.
 
 For your conclusion, use ## Conclusion as the section header.
 
-Here are the sections to reflect on for writing: {formatted_str_sections}"""
+Here are the sections to reflect on for writing: {formatted_str_sections}
+
+[Note]
+- Write your response in Korean(including the title and section headers).
+- Write your answer in professional, academic tone.
+"""

@@ -4,12 +4,15 @@
 """
 
 import operator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Annotated, Optional
 from typing_extensions import TypedDict
 from pydantic import BaseModel, Field
 from langgraph.graph import MessagesState
-
+from langchain_core.messages import AnyMessage
+from langgraph.graph import add_messages
+from typing import Sequence
+from typing_extensions import Annotated
 
 # ====================== 데이터 모델 ======================
 
@@ -57,7 +60,9 @@ class InputState:
     """그래프 입력을 위한 스키마"""
 
     # 연구 주제
-    topic: str
+    messages: Annotated[Sequence[AnyMessage], add_messages] = field(
+        default_factory=list
+    )
 
 
 @dataclass
@@ -120,3 +125,8 @@ class ResearchGraphState(TypedDict):
     conclusion: str
     # 완성된 최종 보고서
     final_report: str
+
+    # 연구 주제
+    messages: Annotated[Sequence[AnyMessage], add_messages] = field(
+        default_factory=list
+    )

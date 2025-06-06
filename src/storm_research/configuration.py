@@ -17,10 +17,14 @@ class Configuration:
 
     # 모델 설정
     model: str = field(
-        default="openai/gpt-4.1",
+        default="azure/gpt-4.1",
         metadata={
             "description": "사용할 LLM 모델 (provider/model 형식)",
-            "examples": ["openai/gpt-4.1", "anthropic/claude-3-5-sonnet-20240620"],
+            "examples": [
+                "azure/gpt-4.1",
+                "openai/gpt-4.1",
+                "anthropic/claude-3-5-sonnet-20240620",
+            ],
         },
     )
 

@@ -50,7 +50,7 @@ async def create_analysts(state: ResearchGraphState, config: RunnableConfig) -> 
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
 
-    topic = state.get("topic", "")
+    topic = state["messages"][-1].content
     max_analysts = state.get("max_analysts", configuration.max_analysts)
 
     # 구조화된 출력을 위해 모델 설정
@@ -380,7 +380,10 @@ async def finalize_report(state: ResearchGraphState) -> dict:
     if sources is not None:
         final_report += "\n\n## Sources\n" + sources
 
-    return {"final_report": final_report}
+    return {
+        "final_report": final_report,
+        "messages": [HumanMessage(content=final_report)],
+    }
 
 
 # ====================== 그래프 빌드 함수 ======================

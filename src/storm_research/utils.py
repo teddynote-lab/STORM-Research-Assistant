@@ -3,8 +3,10 @@
 이 모듈은 프로젝트 전반에서 사용되는 공통 유틸리티 함수들을 제공합니다.
 """
 
+import os
 from typing import Union, Optional
 from langchain_openai import ChatOpenAI
+from langchain_openai.chat_models import AzureChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
@@ -35,6 +37,24 @@ def load_chat_model(model_string: str) -> BaseChatModel:
         return ChatOpenAI(model=model_name)
     elif provider == "anthropic":
         return ChatAnthropic(model=model_name)
+    elif provider == "azure":
+        # Azure OpenAI 설정
+        azure_endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT")
+        azure_api_key = os.environ.get("AZURE_OPENAI_API_KEY")
+        
+        if not azure_endpoint or not azure_api_key:
+            raise ValueError(
+                "Azure OpenAI를 사용하려면 AZURE_OPENAI_ENDPOINT와 "
+                "AZURE_OPENAI_API_KEY 환경 변수를 설정해야 합니다."
+            )
+        
+        return AzureChatOpenAI(
+            deployment_name=model_name,
+            api_version="2024-12-01-preview",
+            azure_endpoint=azure_endpoint,
+            api_key=azure_api_key,
+            temperature=0.1
+        )
     else:
         raise ValueError(f"지원하지 않는 프로바이더: {provider}")
 

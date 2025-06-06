@@ -73,11 +73,18 @@ uv pip install -e .
 
 ```env
 # 필수 API 키
-OPENAI_API_KEY=your_openai_key
 TAVILY_API_KEY=your_tavily_key
 
-# 선택적 (Anthropic 모델 사용 시)
+# LLM Provider별 API 키 (사용할 provider에 따라 설정)
+# OpenAI
+OPENAI_API_KEY=your_openai_key
+
+# Anthropic
 ANTHROPIC_API_KEY=your_anthropic_key
+
+# Azure OpenAI
+AZURE_OPENAI_API_KEY=your_azure_openai_key
+AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 ```
 
 ### 3. LangGraph Studio 실행
@@ -102,7 +109,7 @@ from langchain_core.runnables import RunnableConfig
 config = RunnableConfig(
     configurable={
         "thread_id": "research-001",
-        "model": "openai/gpt-4o",
+        "model": "azure_openai/gpt-4.1",  # 기본값, 다른 모델도 사용 가능
         "max_analysts": 3,
         "max_interview_turns": 3,
     }
@@ -133,12 +140,17 @@ print(final_result["final_report"])
 
 | 설정 | 기본값 | 설명 |
 |------|--------|------|
-| `model` | `openai/gpt-4o` | 사용할 LLM 모델 |
+| `model` | `azure/gpt-4.1` | 사용할 LLM 모델 (provider/model 형식) |
 | `max_analysts` | 3 | 생성할 분석가 수 |
 | `max_interview_turns` | 3 | 인터뷰 최대 턴 수 |
 | `tavily_max_results` | 3 | Tavily 검색 결과 수 |
 | `arxiv_max_docs` | 3 | ArXiv 검색 문서 수 |
 | `parallel_interviews` | `True` | 병렬 인터뷰 실행 여부 |
+
+#### 지원 모델
+- **Azure OpenAI**: `azure/gpt-4.1`, `azure/gpt-4o` 등
+- **OpenAI**: `openai/gpt-4`, `openai/gpt-4-turbo` 등
+- **Anthropic**: `anthropic/claude-3-5-sonnet-20240620` 등
 
 ## 🧪 테스트
 

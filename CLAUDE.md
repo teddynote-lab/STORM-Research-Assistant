@@ -2,36 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Development Commands
-
-### Testing
-```bash
-# Run all unit tests
-make test
-
-# Run specific test file
-make test TEST_FILE=tests/unit_tests/test_configuration.py
-
-# Watch mode for continuous testing
-make test_watch
-
-# Run integration tests
-python -m pytest tests/integration_tests/
-```
-
-### Code Quality
-```bash
-# Run linting and type checking
-make lint
-
-# Auto-format code
-make format
-
-# Check only changed files from main
-make lint_diff
-make format_diff
-```
-
 ## Architecture Overview
 
 This is a ReAct (Reasoning and Action) agent built with LangGraph for LangGraph Studio. The agent follows a cyclic pattern:
@@ -52,12 +22,17 @@ This is a ReAct (Reasoning and Action) agent built with LangGraph for LangGraph 
 ### Model Configuration
 
 The agent supports multiple LLM providers via the format `provider/model-name`:
-- Default: `anthropic/claude-3-5-sonnet-20240620`
-- Also supports OpenAI models like `openai/gpt-4-turbo`
+- Default: `azure/gpt-4.1`
+- Also supports:
+  - Azure OpenAI models like `azure/gpt-4.1`
+  - OpenAI models like `openai/gpt-4-turbo`
+  - Anthropic models like `anthropic/claude-3-5-sonnet-20240620`
 
 Set API keys in `.env`:
 - `ANTHROPIC_API_KEY`
-- `OPENAI_API_KEY` 
+- `OPENAI_API_KEY`
+- `AZURE_OPENAI_API_KEY` (required for Azure OpenAI)
+- `AZURE_OPENAI_ENDPOINT` (required for Azure OpenAI)
 - `TAVILY_API_KEY` (required for search functionality)
 
 ### LangGraph Studio Integration
@@ -72,4 +47,11 @@ uv pip install -e .
 
 # Or with pip
 pip install -e .
+```
+
+## Testing after code changes
+
+```bash
+# Run the agent
+uv run langgraph dev
 ```
