@@ -183,9 +183,9 @@ print(final_result["final_report"])
 
 #### Supported Models
 
-- **Azure OpenAI**: `azure/gpt-4.1`, `azure/gpt-4o`, `azure/gpt-4o-mini`
-- **OpenAI**: `openai/gpt-4`, `openai/gpt-4-turbo`, `openai/gpt-3.5-turbo`
-- **Anthropic**: `anthropic/claude-3-5-sonnet-20240620`, `anthropic/claude-3-opus-20240229`
+- **Azure OpenAI**: `azure/gpt-4.1`, `azure/gpt-4.1-mini`, `azure/gpt-4.1-nano`
+- **OpenAI**: `openai/gpt-4.1`, `openai/gpt-4.1-mini`, `openai/gpt-4.1-nano`
+- **Anthropic**: `anthropic/claude-opus-4-20250514`, `anthropic/claude-3-7-sonnet-latest`, `anthropic/claude-3-5-haiku-latest`
 
 ## 📚 Examples
 
