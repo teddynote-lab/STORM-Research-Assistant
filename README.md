@@ -190,7 +190,3 @@ python -m pytest tests/integration_tests/
 
 - Stanford의 STORM 논문에서 영감을 받았습니다
 - 출처: https://github.com/teddylee777/langchain-kr/blob/main/17-LangGraph/03-Use-Cases/10-LangGraph-Research-Assistant.ipynb
-
----
-
-**Made with ❤️ using LangGraph**
