@@ -1,6 +1,6 @@
-"""STORM Research Assistant의 도구 정의
+"""STORM Research Assistant Tool Definitions
 
-이 모듈은 연구 프로세스에서 사용되는 각종 도구들을 정의합니다.
+This module defines various tools used in the research process.
 """
 
 from typing import Optional
@@ -11,22 +11,22 @@ from storm_research.configuration import Configuration
 
 
 class SearchTools:
-    """연구를 위한 검색 도구들을 관리하는 클래스"""
+    """Class managing search tools for research"""
     
     def __init__(self, config: Optional[RunnableConfig] = None):
-        """검색 도구 초기화
+        """Initialize search tools
         
         Args:
-            config: 런타임 설정
+            config: Runtime configuration
         """
         self.configuration = Configuration.from_runnable_config(config)
         
-        # Tavily 검색 도구 초기화
+        # Initialize Tavily search tool
         self.tavily_search = TavilySearchResults(
             max_results=self.configuration.tavily_max_results
         )
         
-        # ArXiv 검색 도구 초기화
+        # Initialize ArXiv search tool
         self.arxiv_retriever = ArxivRetriever(
             load_max_docs=self.configuration.arxiv_max_docs,
             load_all_available_meta=True,
@@ -34,19 +34,19 @@ class SearchTools:
         )
     
     async def search_web(self, query: str) -> str:
-        """웹에서 정보를 검색
+        """Search for information on the web
         
         Args:
-            query: 검색 쿼리
+            query: Search query
             
         Returns:
-            포맷팅된 검색 결과
+            Formatted search results
         """
         try:
-            # Tavily API를 사용하여 웹 검색
+            # Search the web using Tavily API
             search_results = await self.tavily_search.ainvoke(query)
             
-            # 결과를 문서 형식으로 포맷팅
+            # Format results as documents
             formatted_results = []
             for doc in search_results:
                 formatted_doc = (
@@ -59,22 +59,22 @@ class SearchTools:
             return "\n\n---\n\n".join(formatted_results)
             
         except Exception as e:
-            return f"<Error>웹 검색 중 오류 발생: {str(e)}</Error>"
+            return f"<Error>Error occurred during web search: {str(e)}</Error>"
     
     async def search_arxiv(self, query: str) -> str:
-        """ArXiv에서 학술 논문 검색
+        """Search for academic papers on ArXiv
         
         Args:
-            query: 검색 쿼리
+            query: Search query
             
         Returns:
-            포맷팅된 검색 결과
+            Formatted search results
         """
         try:
-            # ArXiv에서 논문 검색
+            # Search papers on ArXiv
             arxiv_results = await self.arxiv_retriever.ainvoke(query)
             
-            # 결과를 문서 형식으로 포맷팅
+            # Format results as documents
             formatted_results = []
             for doc in arxiv_results:
                 metadata = doc.metadata
@@ -92,17 +92,17 @@ class SearchTools:
             return "\n\n---\n\n".join(formatted_results)
             
         except Exception as e:
-            return f"<Error>ArXiv 검색 중 오류 발생: {str(e)}</Error>"
+            return f"<Error>Error occurred during ArXiv search: {str(e)}</Error>"
 
 
-# 도구 인스턴스 생성 함수
+# Tool instance creation function
 def get_search_tools(config: Optional[RunnableConfig] = None) -> SearchTools:
-    """설정에 따른 검색 도구 인스턴스 반환
+    """Return search tool instance based on configuration
     
     Args:
-        config: 런타임 설정
+        config: Runtime configuration
         
     Returns:
-        SearchTools 인스턴스
+        SearchTools instance
     """
     return SearchTools(config)

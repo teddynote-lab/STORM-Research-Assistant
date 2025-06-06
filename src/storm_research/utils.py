@@ -1,6 +1,6 @@
-"""STORM Research Assistant의 유틸리티 함수들
+"""STORM Research Assistant Utility Functions
 
-이 모듈은 프로젝트 전반에서 사용되는 공통 유틸리티 함수들을 제공합니다.
+This module provides common utility functions used throughout the project.
 """
 
 import os
@@ -13,39 +13,39 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 
 def load_chat_model(model_string: str) -> BaseChatModel:
-    """모델 문자열을 파싱하여 적절한 Chat 모델을 로드
+    """Parse model string and load appropriate Chat model
     
     Args:
-        model_string: "provider/model-name" 형식의 문자열
+        model_string: String in "provider/model-name" format
         
     Returns:
-        초기화된 Chat 모델
+        Initialized Chat model
         
     Raises:
-        ValueError: 지원하지 않는 프로바이더인 경우
+        ValueError: If provider is not supported
     """
-    # 프로바이더와 모델명 분리
+    # Separate provider and model name
     try:
         provider, model_name = model_string.split("/", 1)
     except ValueError:
         raise ValueError(
-            f"모델 문자열은 'provider/model-name' 형식이어야 합니다. 입력값: {model_string}"
+            f"Model string must be in 'provider/model-name' format. Input: {model_string}"
         )
     
-    # 프로바이더별 모델 초기화
+    # Initialize model by provider
     if provider == "openai":
         return ChatOpenAI(model=model_name)
     elif provider == "anthropic":
         return ChatAnthropic(model=model_name)
     elif provider == "azure":
-        # Azure OpenAI 설정
+        # Azure OpenAI configuration
         azure_endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT")
         azure_api_key = os.environ.get("AZURE_OPENAI_API_KEY")
         
         if not azure_endpoint or not azure_api_key:
             raise ValueError(
-                "Azure OpenAI를 사용하려면 AZURE_OPENAI_ENDPOINT와 "
-                "AZURE_OPENAI_API_KEY 환경 변수를 설정해야 합니다."
+                "To use Azure OpenAI, AZURE_OPENAI_ENDPOINT and "
+                "AZURE_OPENAI_API_KEY environment variables must be set."
             )
         
         return AzureChatOpenAI(
@@ -56,19 +56,19 @@ def load_chat_model(model_string: str) -> BaseChatModel:
             temperature=0.1
         )
     else:
-        raise ValueError(f"지원하지 않는 프로바이더: {provider}")
+        raise ValueError(f"Unsupported provider: {provider}")
 
 
 def extract_text_from_message(
     message: Union[AIMessage, HumanMessage, SystemMessage, str]
 ) -> str:
-    """다양한 메시지 타입에서 텍스트 추출
+    """Extract text from various message types
     
     Args:
-        message: 텍스트를 추출할 메시지
+        message: Message to extract text from
         
     Returns:
-        추출된 텍스트
+        Extracted text
     """
     if isinstance(message, str):
         return message
@@ -79,43 +79,43 @@ def extract_text_from_message(
 
 
 def format_analyst_description(analyst) -> str:
-    """분석가 정보를 보기 좋게 포맷팅
+    """Format analyst information for display
     
     Args:
-        analyst: Analyst 객체
+        analyst: Analyst object
         
     Returns:
-        포맷팅된 분석가 설명
+        Formatted analyst description
     """
     return (
         f"👤 **{analyst.name}**\n"
-        f"   - 역할: {analyst.role}\n"
-        f"   - 소속: {analyst.affiliation}\n"
-        f"   - 전문분야: {analyst.description}"
+        f"   - Role: {analyst.role}\n"
+        f"   - Affiliation: {analyst.affiliation}\n"
+        f"   - Expertise: {analyst.description}"
     )
 
 
 def format_section_header(section_name: str) -> str:
-    """섹션 헤더를 일관된 형식으로 포맷팅
+    """Format section header in consistent style
     
     Args:
-        section_name: 섹션 이름
+        section_name: Section name
         
     Returns:
-        포맷팅된 헤더
+        Formatted header
     """
     return f"\n\n## {section_name}\n\n"
 
 
 def truncate_text(text: str, max_length: int = 1000) -> str:
-    """텍스트를 지정된 길이로 자르고 말줄임표 추가
+    """Truncate text to specified length and add ellipsis
     
     Args:
-        text: 자를 텍스트
-        max_length: 최대 길이
+        text: Text to truncate
+        max_length: Maximum length
         
     Returns:
-        잘린 텍스트
+        Truncated text
     """
     if len(text) <= max_length:
         return text
@@ -123,30 +123,30 @@ def truncate_text(text: str, max_length: int = 1000) -> str:
 
 
 def clean_source_citation(source: str) -> str:
-    """소스 인용을 깔끔하게 정리
+    """Clean up source citations
     
     Args:
-        source: 원본 소스 문자열
+        source: Original source string
         
     Returns:
-        정리된 소스 문자열
+        Cleaned source string
     """
-    # Document 태그 제거
+    # Remove Document tags
     source = source.replace('<Document source="', '')
     source = source.replace('"/>', '')
     source = source.replace('</Document>', '')
     
-    # 중복된 공백 제거
+    # Remove duplicate spaces
     source = ' '.join(source.split())
     
     return source.strip()
 
 
 def generate_thread_id() -> str:
-    """체크포인터용 고유 thread ID 생성
+    """Generate unique thread ID for checkpointer
     
     Returns:
-        UUID 기반 thread ID
+        UUID-based thread ID
     """
     import uuid
     return str(uuid.uuid4())

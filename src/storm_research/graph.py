@@ -1,6 +1,6 @@
-"""STORM Research Assistant의 메인 그래프 정의
+"""STORM Research Assistant Main Graph Definition
 
-이 모듈은 연구 프로세스를 조율하는 LangGraph 그래프를 정의합니다.
+This module defines the LangGraph graph that orchestrates the research process.
 """
 
 from typing import List, Literal, cast
@@ -13,7 +13,7 @@ from langchain_core.messages import (
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, START, END
 
-# from langgraph.checkpoint.memory import InMemorySaver  # LangGraph API가 자동으로 처리
+# from langgraph.checkpoint.memory import InMemorySaver  # LangGraph API handles this automatically
 from langgraph.constants import Send
 
 from storm_research.state import (
@@ -39,13 +39,13 @@ from storm_research.tools import get_search_tools
 from storm_research.utils import load_chat_model, generate_thread_id
 
 
-# ====================== 분석가 생성 노드 ======================
+# ====================== Analyst Generation Node ======================
 
 
 async def create_analysts(state: ResearchGraphState, config: RunnableConfig) -> dict:
-    """연구 주제에 맞는 분석가 페르소나를 생성
+    """Generate analyst personas tailored to the research topic
 
-    각 분석가는 고유한 관점과 전문성을 가지고 연구에 기여합니다.
+    Each analyst contributes to the research with unique perspectives and expertise.
     """
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
@@ -53,17 +53,17 @@ async def create_analysts(state: ResearchGraphState, config: RunnableConfig) -> 
     topic = state["messages"][-1].content
     max_analysts = state.get("max_analysts", configuration.max_analysts)
 
-    # 구조화된 출력을 위해 모델 설정
+    # Configure model for structured output
     structured_model = model.with_structured_output(Perspectives)
 
-    # 프롬프트 구성
+    # Construct prompt
     system_message = ANALYST_INSTRUCTIONS.format(
         topic=topic,
-        human_analyst_feedback="",  # 사용자 피드백은 비어있음
+        human_analyst_feedback="",  # User feedback is empty
         max_analysts=max_analysts,
     )
 
-    # 분석가 생성
+    # Generate analysts
     result = await structured_model.ainvoke(
         [
             SystemMessage(content=system_message),
@@ -74,14 +74,14 @@ async def create_analysts(state: ResearchGraphState, config: RunnableConfig) -> 
     return {"analysts": result.analysts}
 
 
-# ====================== 인터뷰 노드 ======================
+# ====================== Interview Nodes ======================
 
 
 async def generate_question(state: InterviewState, config: RunnableConfig) -> dict:
-    """분석가가 전문가에게 질문 생성
+    """Generate questions from analyst to expert
 
-    분석가의 페르소나와 이전 대화 내용을 바탕으로
-    통찰력 있는 질문을 생성합니다.
+    Creates insightful questions based on the analyst's persona
+    and previous conversation content.
     """
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
@@ -89,64 +89,64 @@ async def generate_question(state: InterviewState, config: RunnableConfig) -> di
     analyst = state["analyst"]
     messages = state["messages"]
 
-    # 질문 생성 프롬프트 구성
+    # Construct question generation prompt
     system_message = QUESTION_INSTRUCTIONS.format(goals=analyst.persona)
 
-    # 질문 생성
+    # Generate question
     question = await model.ainvoke([SystemMessage(content=system_message)] + messages)
 
     return {"messages": [question]}
 
 
 async def search_web(state: InterviewState, config: RunnableConfig) -> dict:
-    """웹에서 관련 정보 검색
+    """Search for relevant information on the web
 
-    대화 내용을 분석하여 적절한 검색 쿼리를 생성하고
-    웹에서 관련 정보를 검색합니다.
+    Analyzes conversation content to generate appropriate search queries
+    and searches for relevant information on the web.
     """
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
     search_tools = get_search_tools(config)
 
-    # 검색 쿼리 생성
+    # Generate search query
     structured_model = model.with_structured_output(SearchQuery)
     search_query = await structured_model.ainvoke(
         [SystemMessage(content=SEARCH_INSTRUCTIONS)] + state["messages"]
     )
 
-    # 웹 검색 수행
+    # Perform web search
     search_results = await search_tools.search_web(search_query.search_query)
 
     return {"context": [search_results]}
 
 
 async def search_arxiv(state: InterviewState, config: RunnableConfig) -> dict:
-    """ArXiv에서 학술 논문 검색
+    """Search for academic papers on ArXiv
 
-    대화 내용을 분석하여 적절한 검색 쿼리를 생성하고
-    ArXiv에서 관련 논문을 검색합니다.
+    Analyzes conversation content to generate appropriate search queries
+    and searches for relevant papers on ArXiv.
     """
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
     search_tools = get_search_tools(config)
 
-    # 검색 쿼리 생성
+    # Generate search query
     structured_model = model.with_structured_output(SearchQuery)
     search_query = await structured_model.ainvoke(
         [SystemMessage(content=SEARCH_INSTRUCTIONS)] + state["messages"]
     )
 
-    # ArXiv 검색 수행
+    # Perform ArXiv search
     search_results = await search_tools.search_arxiv(search_query.search_query)
 
     return {"context": [search_results]}
 
 
 async def generate_answer(state: InterviewState, config: RunnableConfig) -> dict:
-    """전문가 역할로 질문에 답변 생성
+    """Generate answer to questions as an expert
 
-    검색된 컨텍스트를 바탕으로 전문가 입장에서
-    상세하고 정확한 답변을 생성합니다.
+    Creates detailed and accurate answers from an expert perspective
+    based on the searched context.
     """
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
@@ -155,22 +155,22 @@ async def generate_answer(state: InterviewState, config: RunnableConfig) -> dict
     messages = state["messages"]
     context = state["context"]
 
-    # 답변 생성 프롬프트 구성
+    # Construct answer generation prompt
     system_message = ANSWER_INSTRUCTIONS.format(goals=analyst.persona, context=context)
 
-    # 답변 생성
+    # Generate answer
     answer = await model.ainvoke([SystemMessage(content=system_message)] + messages)
 
-    # 전문가 답변임을 표시
+    # Mark as expert answer
     answer.name = "expert"
 
     return {"messages": [answer]}
 
 
 async def save_interview(state: InterviewState) -> dict:
-    """완료된 인터뷰 내용 저장
+    """Save completed interview content
 
-    대화 내용을 문자열로 변환하여 저장합니다.
+    Converts conversation content to string format and saves it.
     """
     messages = state["messages"]
     interview_content = get_buffer_string(messages)
@@ -181,24 +181,24 @@ async def save_interview(state: InterviewState) -> dict:
 def route_messages(
     state: InterviewState, name: str = "expert"
 ) -> Literal["ask_question", "save_interview"]:
-    """인터뷰 진행 상황에 따라 다음 단계 결정
+    """Determine next step based on interview progress
 
-    최대 턴 수에 도달했거나 인터뷰가 완료되면 저장하고,
-    그렇지 않으면 추가 질문을 생성합니다.
+    Saves when maximum turns are reached or interview is complete,
+    otherwise generates additional questions.
     """
     messages = state["messages"]
     max_num_turns = state.get("max_num_turns", 3)
 
-    # 전문가 답변 횟수 확인
+    # Check number of expert responses
     num_responses = len(
         [m for m in messages if isinstance(m, AIMessage) and m.name == name]
     )
 
-    # 최대 턴 수 도달 확인
+    # Check if maximum turns reached
     if num_responses >= max_num_turns:
         return "save_interview"
 
-    # 인터뷰 종료 신호 확인
+    # Check for interview end signal
     last_question = messages[-2]
     if "Thank you so much for your help" in last_question.content:
         return "save_interview"
@@ -207,10 +207,10 @@ def route_messages(
 
 
 async def write_section(state: InterviewState, config: RunnableConfig) -> dict:
-    """인터뷰 내용을 바탕으로 보고서 섹션 작성
+    """Write report section based on interview content
 
-    분석가의 관점에서 인터뷰 내용을 정리하여
-    보고서의 한 섹션을 작성합니다.
+    Organizes interview content from the analyst's perspective
+    to write a section of the report.
     """
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
@@ -218,10 +218,10 @@ async def write_section(state: InterviewState, config: RunnableConfig) -> dict:
     context = state["context"]
     analyst = state["analyst"]
 
-    # 섹션 작성 프롬프트 구성
+    # Construct section writing prompt
     system_message = SECTION_WRITER_INSTRUCTIONS.format(focus=analyst.description)
 
-    # 섹션 작성
+    # Write section
     section = await model.ainvoke(
         [
             SystemMessage(content=system_message),
@@ -232,17 +232,17 @@ async def write_section(state: InterviewState, config: RunnableConfig) -> dict:
     return {"sections": [section.content]}
 
 
-# ====================== 보고서 작성 노드 ======================
+# ====================== Report Writing Nodes ======================
 
 
 def initiate_all_interviews(state: ResearchGraphState) -> List[Send]:
-    """모든 분석가의 인터뷰를 동시에 시작
+    """Start interviews for all analysts simultaneously
 
-    각 분석가별로 독립적인 인터뷰 프로세스를 시작합니다.
+    Initiates independent interview processes for each analyst.
     """
     topic = state.get("topic", "")
 
-    # 각 분석가별로 인터뷰 시작
+    # Start interview for each analyst
     return [
         Send(
             "conduct_interview",
@@ -261,10 +261,10 @@ def initiate_all_interviews(state: ResearchGraphState) -> List[Send]:
 
 
 async def write_report(state: ResearchGraphState, config: RunnableConfig) -> dict:
-    """모든 섹션을 통합하여 보고서 본문 작성
+    """Write report body by integrating all sections
 
-    각 분석가가 작성한 섹션들을 종합하여
-    일관성 있는 보고서로 통합합니다.
+    Synthesizes sections written by each analyst
+    into a coherent integrated report.
     """
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
@@ -272,15 +272,15 @@ async def write_report(state: ResearchGraphState, config: RunnableConfig) -> dic
     sections = state["sections"]
     topic = state.get("topic", "")
 
-    # 모든 섹션 연결
+    # Connect all sections
     formatted_sections = "\n\n".join(sections)
 
-    # 보고서 작성 프롬프트 구성
+    # Construct report writing prompt
     system_message = REPORT_WRITER_INSTRUCTIONS.format(
         topic=topic, context=formatted_sections
     )
 
-    # 보고서 작성
+    # Write report
     report = await model.ainvoke(
         [
             SystemMessage(content=system_message),
@@ -292,10 +292,10 @@ async def write_report(state: ResearchGraphState, config: RunnableConfig) -> dic
 
 
 async def write_introduction(state: ResearchGraphState, config: RunnableConfig) -> dict:
-    """보고서 서론 작성
+    """Write report introduction
 
-    전체 연구 내용을 요약하고 독자의 관심을 끄는
-    매력적인 서론을 작성합니다.
+    Creates an engaging introduction that summarizes
+    the entire research and captures reader interest.
     """
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
@@ -303,15 +303,15 @@ async def write_introduction(state: ResearchGraphState, config: RunnableConfig) 
     sections = state["sections"]
     topic = state.get("topic", "")
 
-    # 모든 섹션 연결
+    # Connect all sections
     formatted_sections = "\n\n".join(sections)
 
-    # 서론 작성 프롬프트 구성
+    # Construct introduction writing prompt
     instructions = INTRO_CONCLUSION_INSTRUCTIONS.format(
         topic=topic, formatted_str_sections=formatted_sections
     )
 
-    # 서론 작성
+    # Write introduction
     intro = await model.ainvoke(
         [instructions, HumanMessage(content="Write the report introduction")]
     )
@@ -320,10 +320,10 @@ async def write_introduction(state: ResearchGraphState, config: RunnableConfig) 
 
 
 async def write_conclusion(state: ResearchGraphState, config: RunnableConfig) -> dict:
-    """보고서 결론 작성
+    """Write report conclusion
 
-    연구의 주요 발견사항을 요약하고
-    향후 연구 방향을 제시하는 결론을 작성합니다.
+    Creates a conclusion that summarizes key findings
+    and suggests future research directions.
     """
     configuration = Configuration.from_runnable_config(config)
     model = load_chat_model(configuration.model)
@@ -331,15 +331,15 @@ async def write_conclusion(state: ResearchGraphState, config: RunnableConfig) ->
     sections = state["sections"]
     topic = state.get("topic", "")
 
-    # 모든 섹션 연결
+    # Connect all sections
     formatted_sections = "\n\n".join(sections)
 
-    # 결론 작성 프롬프트 구성
+    # Construct conclusion writing prompt
     instructions = INTRO_CONCLUSION_INSTRUCTIONS.format(
         topic=topic, formatted_str_sections=formatted_sections
     )
 
-    # 결론 작성
+    # Write conclusion
     conclusion = await model.ainvoke(
         [instructions, HumanMessage(content="Write the report conclusion")]
     )
@@ -348,18 +348,18 @@ async def write_conclusion(state: ResearchGraphState, config: RunnableConfig) ->
 
 
 async def finalize_report(state: ResearchGraphState) -> dict:
-    """최종 보고서 조립
+    """Assemble final report
 
-    서론, 본문, 결론을 하나로 합쳐
-    완성된 보고서를 생성합니다.
+    Combines introduction, body, and conclusion
+    to create the completed report.
     """
     content = state["content"]
 
-    # "## Insights" 제목 제거
+    # Remove "## Insights" title
     if content.startswith("## Insights"):
         content = content.strip("## Insights")
 
-    # Sources 섹션 분리
+    # Separate Sources section
     sources = None
     if "## Sources" in content:
         try:
@@ -367,7 +367,7 @@ async def finalize_report(state: ResearchGraphState) -> dict:
         except:
             sources = None
 
-    # 최종 보고서 조립
+    # Assemble final report
     final_report = (
         state["introduction"]
         + "\n\n---\n\n## Main Idea\n\n"
@@ -376,7 +376,7 @@ async def finalize_report(state: ResearchGraphState) -> dict:
         + state["conclusion"]
     )
 
-    # Sources 섹션 추가
+    # Add Sources section
     if sources is not None:
         final_report += "\n\n## Sources\n" + sources
 
@@ -386,18 +386,18 @@ async def finalize_report(state: ResearchGraphState) -> dict:
     }
 
 
-# ====================== 그래프 빌드 함수 ======================
+# ====================== Graph Build Functions ======================
 
 
 def build_interview_graph():
-    """인터뷰 서브그래프 생성
+    """Create interview subgraph
 
-    단일 분석가의 인터뷰 프로세스를 관리하는
-    서브그래프를 생성합니다.
+    Creates a subgraph that manages the interview process
+    for a single analyst.
     """
     builder = StateGraph(InterviewState)
 
-    # 노드 추가
+    # Add nodes
     builder.add_node("ask_question", generate_question)
     builder.add_node("search_web", search_web)
     builder.add_node("search_arxiv", search_arxiv)
@@ -405,7 +405,7 @@ def build_interview_graph():
     builder.add_node("save_interview", save_interview)
     builder.add_node("write_section", write_section)
 
-    # 엣지 정의
+    # Define edges
     builder.add_edge(START, "ask_question")
     builder.add_edge("ask_question", "search_web")
     builder.add_edge("ask_question", "search_arxiv")
@@ -417,25 +417,25 @@ def build_interview_graph():
     builder.add_edge("save_interview", "write_section")
     builder.add_edge("write_section", END)
 
-    # LangGraph API가 체크포인터를 자동으로 관리
+    # LangGraph API automatically manages checkpointer
     interview_graph = builder.compile().with_config(run_name="Conduct Interview")
 
     return interview_graph
 
 
 def build_research_graph():
-    """메인 연구 그래프 생성
+    """Create main research graph
 
-    전체 연구 프로세스를 조율하는
-    메인 그래프를 생성합니다.
+    Creates the main graph that orchestrates
+    the entire research process.
     """
-    # 인터뷰 서브그래프 생성
+    # Create interview subgraph
     interview_graph = build_interview_graph()
 
-    # 메인 그래프 빌더 - 입력/출력 스키마 지정
+    # Main graph builder - specify input/output schemas
     builder = StateGraph(ResearchGraphState, input=InputState, output=OutputState)
 
-    # 노드 추가
+    # Add nodes
     builder.add_node("create_analysts", create_analysts)
     builder.add_node("conduct_interview", interview_graph)
     builder.add_node("write_report", write_report)
@@ -443,30 +443,30 @@ def build_research_graph():
     builder.add_node("write_conclusion", write_conclusion)
     builder.add_node("finalize_report", finalize_report)
 
-    # 엣지 정의
+    # Define edges
     builder.add_edge(START, "create_analysts")
     builder.add_conditional_edges(
         "create_analysts", initiate_all_interviews, ["conduct_interview"]
     )
 
-    # 보고서 작성 단계
+    # Report writing phase
     builder.add_edge("conduct_interview", "write_report")
     builder.add_edge("conduct_interview", "write_introduction")
     builder.add_edge("conduct_interview", "write_conclusion")
 
-    # 최종 보고서 생성
+    # Generate final report
     builder.add_edge(
         ["write_conclusion", "write_report", "write_introduction"], "finalize_report"
     )
     builder.add_edge("finalize_report", END)
 
-    # LangGraph API가 체크포인터를 자동으로 관리
+    # LangGraph API automatically manages checkpointer
     graph = builder.compile()
 
     return graph
 
 
-# ====================== 메인 그래프 인스턴스 ======================
+# ====================== Main Graph Instance ======================
 
-# LangGraph Studio에서 사용할 그래프 인스턴스
+# Graph instance for use in LangGraph Studio
 graph = build_research_graph()

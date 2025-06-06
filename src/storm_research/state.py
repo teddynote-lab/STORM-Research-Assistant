@@ -1,6 +1,6 @@
-"""STORM Research Assistant의 상태 정의
+"""STORM Research Assistant State Definitions
 
-이 모듈은 연구 프로세스의 각 단계에서 사용되는 상태를 정의합니다.
+This module defines the states used at each stage of the research process.
 """
 
 import operator
@@ -14,52 +14,52 @@ from langgraph.graph import add_messages
 from typing import Sequence
 from typing_extensions import Annotated
 
-# ====================== 데이터 모델 ======================
+# ====================== Data Models ======================
 
 
 class Analyst(BaseModel):
-    """분석가의 속성과 메타데이터를 정의하는 클래스
+    """Class defining analyst attributes and metadata
 
-    각 분석가는 고유한 관점과 전문성을 가지고 있습니다.
+    Each analyst has unique perspectives and expertise.
     """
 
-    # 주요 소속 정보
-    affiliation: str = Field(description="분석가의 주요 소속 기관")
-    # 이름
-    name: str = Field(description="분석가의 이름")
-    # 역할
-    role: str = Field(description="주제와 관련된 분석가의 역할")
-    # 중점, 우려 사항 및 동기에 대한 설명
-    description: str = Field(description="분석가의 관심사, 우려사항, 동기에 대한 설명")
+    # Primary affiliation information
+    affiliation: str = Field(description="Analyst's primary organization")
+    # Name
+    name: str = Field(description="Analyst's name")
+    # Role
+    role: str = Field(description="Analyst's role related to the topic")
+    # Description of focus, concerns, and motivations
+    description: str = Field(description="Description of analyst's interests, concerns, and motivations")
 
     @property
     def persona(self) -> str:
-        """분석가의 페르소나를 문자열로 반환"""
+        """Return analyst's persona as string"""
         return f"Name: {self.name}\nRole: {self.role}\nAffiliation: {self.affiliation}\nDescription: {self.description}\n"
 
 
 class Perspectives(BaseModel):
-    """분석가들의 집합을 나타내는 클래스"""
+    """Class representing a collection of analysts"""
 
     analysts: List[Analyst] = Field(
-        description="역할과 소속을 포함한 분석가들의 종합 목록"
+        description="Comprehensive list of analysts including roles and affiliations"
     )
 
 
 class SearchQuery(BaseModel):
-    """검색 쿼리를 위한 데이터 클래스"""
+    """Data class for search queries"""
 
-    search_query: str = Field(None, description="정보 검색을 위한 검색 쿼리")
+    search_query: str = Field(None, description="Search query for information retrieval")
 
 
-# ====================== 상태 정의 ======================
+# ====================== State Definitions ======================
 
 
 @dataclass
 class InputState:
-    """그래프 입력을 위한 스키마"""
+    """Schema for graph input"""
 
-    # 연구 주제
+    # Research topic
     messages: Annotated[Sequence[AnyMessage], add_messages] = field(
         default_factory=list
     )
@@ -67,66 +67,66 @@ class InputState:
 
 @dataclass
 class OutputState:
-    """그래프 출력을 위한 스키마"""
+    """Schema for graph output"""
 
-    # 완성된 최종 보고서
+    # Completed final report
     final_report: str
 
 
 class GenerateAnalystsState(InputState):
-    """분석가 생성 단계의 상태"""
+    """State for analyst generation phase"""
 
-    # 연구 주제
+    # Research topic
     topic: str
-    # 생성할 분석가의 최대 수
+    # Maximum number of analysts to generate
     max_analysts: int
-    # 사용자로부터 받은 피드백
+    # Feedback received from user
     human_analyst_feedback: Optional[str]
-    # 생성된 분석가 목록
+    # Generated analyst list
     analysts: List[Analyst]
 
 
 class InterviewState(MessagesState):
-    """인터뷰 단계의 상태
+    """State for interview phase
 
-    MessagesState를 상속받아 대화 내역을 자동으로 관리합니다.
+    Inherits from MessagesState to automatically manage conversation history.
     """
 
-    # 대화 턴수
+    # Conversation turns
     max_num_turns: int
-    # 소스 문서를 포함하는 컨텍스트 리스트
+    # Context list containing source documents
     context: Annotated[list, operator.add]
-    # 현재 인터뷰 중인 분석가
+    # Analyst currently being interviewed
     analyst: Analyst
-    # 인터뷰 내용을 저장하는 문자열
+    # String storing interview content
     interview: str
-    # 작성된 보고서 섹션 리스트
+    # List of written report sections
     sections: list
 
 
 class ResearchGraphState(TypedDict):
-    """전체 연구 프로세스의 내부 상태"""
+    """Internal state of the entire research process"""
 
-    # 연구 주제
+    # Research topic
     topic: str
-    # 생성할 분석가의 최대 수
+    # Maximum number of analysts to generate
     max_analysts: int
-    # 사용자의 분석가 피드백
+    # User's analyst feedback
     human_analyst_feedback: Optional[str]
-    # 생성된 분석가 목록
+    # Generated analyst list
     analysts: List[Analyst]
-    # 각 분석가가 작성한 섹션들
+    # Sections written by each analyst
     sections: Annotated[list, operator.add]
-    # 최종 보고서의 서론
+    # Introduction of final report
     introduction: str
-    # 최종 보고서의 본문 내용
+    # Body content of final report
     content: str
-    # 최종 보고서의 결론
+    # Conclusion of final report
     conclusion: str
-    # 완성된 최종 보고서
+    # Completed final report
     final_report: str
 
-    # 연구 주제
+    # Research topic
     messages: Annotated[Sequence[AnyMessage], add_messages] = field(
         default_factory=list
     )

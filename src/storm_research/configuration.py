@@ -1,6 +1,6 @@
-"""STORM Research Assistant의 설정 관리
+"""STORM Research Assistant Configuration Management
 
-이 모듈은 연구 보조 시스템의 런타임 설정을 관리합니다.
+This module manages runtime configuration for the research assistant system.
 """
 
 from dataclasses import dataclass, field
@@ -10,70 +10,86 @@ from langchain_core.runnables import RunnableConfig
 
 @dataclass
 class Configuration:
-    """STORM Research Assistant의 설정 클래스
+    """STORM Research Assistant Configuration Class
 
-    LangGraph Studio에서 사용할 수 있는 설정 옵션들을 정의합니다.
+    Defines configuration options available in LangGraph Studio.
     """
 
-    # 모델 설정
+    # Model Settings
     model: str = field(
         default="azure/gpt-4.1",
         metadata={
-            "description": "사용할 LLM 모델 (provider/model 형식)",
+            "description": "LLM model to use (provider/model format)",
             "examples": [
                 "azure/gpt-4.1",
                 "openai/gpt-4.1",
-                "anthropic/claude-3-5-sonnet-20240620",
+                "openai/gpt-4.1-mini",
+                "anthropic/claude-opus-4-20250514",
+                "anthropic/claude-3-7-sonnet-latest",
+                "anthropic/claude-3-5-haiku-latest",
             ],
         },
     )
 
-    # 연구 설정
+    # Research Settings
     max_analysts: int = field(
-        default=3, metadata={"description": "생성할 최대 분석가 수", "range": [1, 10]}
+        default=3,
+        metadata={
+            "description": "Maximum number of analysts to generate",
+            "range": [1, 10],
+        },
     )
 
     max_interview_turns: int = field(
         default=3,
-        metadata={"description": "인터뷰당 최대 대화 턴 수", "range": [1, 10]},
+        metadata={
+            "description": "Maximum conversation turns per interview",
+            "range": [1, 10],
+        },
     )
 
-    # 검색 설정
+    # Search Settings
     tavily_max_results: int = field(
         default=3,
-        metadata={"description": "Tavily 검색 결과 최대 개수", "range": [1, 10]},
+        metadata={
+            "description": "Maximum number of Tavily search results",
+            "range": [1, 10],
+        },
     )
 
     arxiv_max_docs: int = field(
         default=3,
-        metadata={"description": "ArXiv 검색 문서 최대 개수", "range": [1, 10]},
+        metadata={
+            "description": "Maximum number of ArXiv search documents",
+            "range": [1, 10],
+        },
     )
 
-    # 병렬 처리 설정
+    # Parallel Processing Settings
     parallel_interviews: bool = field(
-        default=True, metadata={"description": "인터뷰를 병렬로 실행할지 여부"}
+        default=True, metadata={"description": "Whether to run interviews in parallel"}
     )
 
-    # 체크포인터 설정
+    # Checkpointer Settings
     enable_checkpointing: bool = field(
-        default=True, metadata={"description": "상태 체크포인팅 활성화 여부"}
+        default=True, metadata={"description": "Whether to enable state checkpointing"}
     )
 
     @classmethod
     def from_runnable_config(
         cls, config: Optional[RunnableConfig] = None
     ) -> "Configuration":
-        """RunnableConfig에서 설정을 추출하여 Configuration 인스턴스 생성
+        """Create Configuration instance by extracting settings from RunnableConfig
 
         Args:
-            config: LangGraph에서 전달되는 런타임 설정
+            config: Runtime configuration passed from LangGraph
 
         Returns:
-            설정이 적용된 Configuration 인스턴스
+            Configuration instance with applied settings
         """
         configurable = config.get("configurable", {}) if config else {}
 
-        # 기본 인스턴스를 생성하여 기본값 가져오기
+        # Create default instance to get default values
         defaults = cls()
 
         return cls(

@@ -1,9 +1,9 @@
-"""STORM Research Assistant의 프롬프트 템플릿
+"""STORM Research Assistant Prompt Templates
 
-이 모듈은 연구 프로세스의 각 단계에서 사용되는 프롬프트를 정의합니다.
+This module defines the prompts used at each stage of the research process.
 """
 
-# ====================== 분석가 생성 프롬프트 ======================
+# ====================== Analyst Generation Prompts ======================
 
 ANALYST_INSTRUCTIONS = """You are tasked with creating a set of AI analyst personas. 
 
@@ -23,7 +23,7 @@ Follow these instructions carefully:
 5. Assign one analyst to each theme."""
 
 
-# ====================== 인터뷰 프롬프트 ======================
+# ====================== Interview Prompts ======================
 
 QUESTION_INSTRUCTIONS = """You are an analyst tasked with interviewing an expert to learn about a specific topic. 
 
@@ -84,7 +84,7 @@ Pay particular attention to the final question posed by the analyst.
 Convert this final question into a well-structured web search query"""
 
 
-# ====================== 보고서 작성 프롬프트 ======================
+# ====================== Report Writing Prompts ======================
 
 SECTION_WRITER_INSTRUCTIONS = """You are an expert technical writer and research analyst with extensive experience in academic and industry research. 
 
@@ -329,7 +329,7 @@ Create a comprehensive report with the following enhanced sections:
 **Note**: Your report should demonstrate the analytical sophistication and insight depth expected in leading academic journals and high-impact industry publications. Focus on generating novel understanding rather than simply aggregating information.
 
 [Note]
-- Write your response in Korean(including the title and section headers).
+- Write your response in English(including the title and section headers).
 - Write your answer in professional, academic tone.
 """
 
@@ -357,6 +357,6 @@ For your conclusion, use ## Conclusion as the section header.
 Here are the sections to reflect on for writing: {formatted_str_sections}
 
 [Note]
-- Write your response in Korean(including the title and section headers).
+- Write your response in English(including the title and section headers).
 - Write your answer in professional, academic tone.
 """

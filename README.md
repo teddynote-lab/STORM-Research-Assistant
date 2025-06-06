@@ -1,192 +1,299 @@
 # 🌪️ STORM Research Assistant
 
-> **STORM**(Synthesis of Topic Outline through Retrieval and Multi-perspective question asking) 개념을 활용한 AI 연구 보조 시스템
+<!-- Project badges -->
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-0.2.6+-green.svg)](https://langchain-ai.github.io/langgraph/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## 📖 소개
+> **STORM** (Synthesis of Topic Outlines through Retrieval and Multi-perspective Question Asking) - A writing system for generating grounded and organized long-form articles from scratch, with comparable breadth and depth to Wikipedia pages
 
-STORM Research Assistant는 복잡한 주제에 대해 심층적인 연구 보고서를 자동으로 생성하는 LangGraph 기반 애플리케이션입니다. 여러 관점을 가진 AI 분석가들이 전문가와 인터뷰를 진행하고, 웹과 학술 자료를 검색하여 종합적인 연구 보고서를 작성합니다.
+## 📖 Overview
 
-### 🎯 주요 특징
+STORM Research Assistant is a LangGraph-based implementation of the STORM methodology from Stanford, designed to write grounded and organized long-form articles from scratch. The system models the pre-writing stage by (1) discovering diverse perspectives for researching the given topic, (2) simulating conversations where writers with different perspectives pose questions to a topic expert grounded on trusted Internet sources, and (3) curating the collected information to create an outline before generating the final article.
 
-- **🤖 다중 관점 분석**: 다양한 배경과 전문성을 가진 AI 분석가들이 연구에 참여
-- **💬 동적 인터뷰**: 각 분석가가 전문가와 심층 인터뷰 진행
-- **🔍 통합 검색**: Tavily(웹 검색)와 ArXiv(학술 논문) 동시 활용
-- **📊 병렬 처리**: 여러 인터뷰를 동시에 진행하여 효율성 극대화
-- **✏️ 자동 보고서 생성**: 서론, 본문, 결론을 포함한 완성도 높은 보고서 작성
-- **🔄 사용자 피드백**: 분석가 생성 단계에서 사용자 개입 가능
+### 🎯 Key Features
 
-## 🏗️ 아키텍처
+- **🔍 Pre-writing Stage Modeling**: Comprehensive research and outline preparation before article generation
+- **🤖 Diverse Perspective Discovery**: Automatic generation of multiple expert perspectives for comprehensive topic coverage
+- **💬 Simulated Expert Conversations**: Multi-perspective question asking with grounded answers from trusted sources
+- **📚 Grounded Information**: All content backed by reliable Internet sources (Tavily web search and ArXiv papers)
+- **📊 Structured Outline Creation**: Systematic curation of collected information into organized outlines
+- **✏️ Long-form Article Generation**: Wikipedia-quality articles with introduction, detailed sections, and conclusion
+- **🔄 User Feedback Integration**: Human-in-the-loop capability for refining analyst perspectives
+- **⚡ Parallel Processing**: Simultaneous execution of multiple perspective interviews for efficiency
+- **🎨 LangGraph Studio Support**: Full integration with LangGraph Studio for visual debugging
 
-### 시스템 구조
+## 🏗️ Architecture
+
+### System Structure
 
 ```
 📁 src/storm_research/
-├── 📄 __init__.py          # 패키지 초기화
-├── 🧠 graph.py            # LangGraph 그래프 정의 (메인 로직)
-├── 📊 state.py            # 상태 및 데이터 모델 정의
-├── 💬 prompts.py          # 프롬프트 템플릿
-├── ⚙️ configuration.py     # 시스템 설정 관리
-├── 🔧 tools.py            # 검색 도구 구현
-└── 🛠️ utils.py            # 유틸리티 함수
+├── 📄 __init__.py          # Package initialization
+├── 🧠 graph.py            # LangGraph graph definition (main logic)
+├── 📊 state.py            # State and data model definitions
+├── 💬 prompts.py          # Prompt templates
+├── ⚙️ configuration.py     # System configuration management
+├── 🔧 tools.py            # Search tool implementations
+└── 🛠️ utils.py            # Utility functions
 ```
 
-### 워크플로우
+### Workflow
 
 ```mermaid
 graph TD
-    A[시작] --> B[분석가 생성]
-    B --> C{사용자 피드백}
-    C -->|피드백 있음| B
-    C -->|피드백 없음| D[병렬 인터뷰 시작]
-    D --> E1[분석가1 인터뷰]
-    D --> E2[분석가2 인터뷰]
-    D --> E3[분석가3 인터뷰]
-    E1 --> F1[질문 생성]
-    F1 --> G1[웹/ArXiv 검색]
-    G1 --> H1[답변 생성]
-    H1 -->|추가 질문| F1
-    H1 -->|완료| I1[섹션 작성]
-    I1 --> J[보고서 통합]
-    J --> K[서론 작성]
-    J --> L[결론 작성]
-    K --> M[최종 보고서]
+    A[Start] --> B[Discover Diverse Perspectives]
+    B --> C[Generate Expert Analysts]
+    C --> D{User Feedback?}
+    D -->|Has Feedback| C
+    D -->|No Feedback| E[Simulate Expert Conversations]
+    E --> F1[Perspective 1: Q&A with Expert]
+    E --> F2[Perspective 2: Q&A with Expert]
+    E --> F3[Perspective 3: Q&A with Expert]
+    F1 --> G1[Ground Answers in Sources]
+    F2 --> G2[Ground Answers in Sources]
+    F3 --> G3[Ground Answers in Sources]
+    G1 --> H[Curate Information]
+    G2 --> H
+    G3 --> H
+    H --> I[Create Structured Outline]
+    I --> J[Generate Article Sections]
+    J --> K[Write Introduction]
+    J --> L[Write Conclusion]
+    K --> M[Final Wikipedia-style Article]
     L --> M
-    M --> N[종료]
+    M --> N[End]
 ```
 
-## 🚀 설치 및 실행
+## 🚀 Installation & Setup
 
-### 1. 환경 설정
+### Prerequisites
+
+- Python 3.11 or higher
+- [uv](https://github.com/astral-sh/uv) package manager
+- API keys for chosen LLM providers
+
+### 1. Clone the Repository
 
 ```bash
-# uv를 사용한 환경 설정
-uv venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
-# 의존성 설치
-uv pip install -e .
+git clone https://github.com/teddynote-lab/STORM-Research-Assistant.git
+cd STORM-Research-Assistant
 ```
 
-### 2. 환경 변수 설정
+### 2. Environment Setup
 
-`.env` 파일을 생성하고 다음 API 키를 설정하세요:
+```bash
+# Create virtual environment using uv
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+uv pip install -e .
+
+# Install development dependencies
+uv pip install -e ".[dev]"
+```
+
+### 3. Environment Variables
+
+Create a `.env` file in the root directory and configure the following API keys:
 
 ```env
-# 필수 API 키
-TAVILY_API_KEY=your_tavily_key
+# Required API Keys
+TAVILY_API_KEY=your_tavily_api_key
 
-# LLM Provider별 API 키 (사용할 provider에 따라 설정)
+# LLM Provider API Keys (choose one or more)
 # OpenAI
-OPENAI_API_KEY=your_openai_key
+OPENAI_API_KEY=your_openai_api_key
 
 # Anthropic
-ANTHROPIC_API_KEY=your_anthropic_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
 
 # Azure OpenAI
-AZURE_OPENAI_API_KEY=your_azure_openai_key
+AZURE_OPENAI_API_KEY=your_azure_openai_api_key
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
+
+# Optional: LangSmith for tracing
+LANGSMITH_PROJECT=STORM-Research-Assistant
+LANGSMITH_API_KEY=your_langsmith_api_key
 ```
 
-### 3. LangGraph Studio 실행
+### 4. Running LangGraph Studio
 
 ```bash
-# LangGraph Studio 설치 (처음 한 번만)
+# Install LangGraph CLI (one-time setup)
 pip install langgraph-cli
 
-# Studio 실행
+# Run LangGraph Studio
 uv run langgraph dev
 ```
 
-## 📝 사용 방법
+Access the studio at `http://localhost:8123`
 
-### 기본 사용법
+## 📝 Usage
+
+### Basic Usage
 
 ```python
 from storm_research import graph
 from langchain_core.runnables import RunnableConfig
 
-# 설정
+# Configuration
 config = RunnableConfig(
     configurable={
         "thread_id": "research-001",
-        "model": "azure_openai/gpt-4.1",  # 기본값, 다른 모델도 사용 가능
+        "model": "azure_openai/gpt-4.1",  # Default model
         "max_analysts": 3,
         "max_interview_turns": 3,
     }
 )
 
-# 연구 시작
+# Start article generation
 inputs = {
-    "topic": "LangGraph의 장점과 실제 활용 사례",
+    "topic": "The Future of Quantum Computing in Cryptography",
     "max_analysts": 3
 }
 
-# 실행 (첫 번째 단계: 분석가 생성)
+# Execute (First step: Discover perspectives and generate analysts)
 result = await graph.ainvoke(inputs, config)
 
-# 사용자 피드백 제공 (선택적)
+# Provide user feedback (optional) to refine perspectives
 await graph.aupdate_state(
     config,
-    {"human_analyst_feedback": "AI 윤리 전문가를 추가해주세요"},
+    {"human_analyst_feedback": "Please add a cybersecurity expert perspective"},
     as_node="human_feedback"
 )
 
-# 연구 완료
+# Complete the pre-writing stage and generate article
 final_result = await graph.ainvoke(None, config)
 print(final_result["final_report"])
 ```
 
-### 설정 옵션
+### Configuration Options
 
-| 설정 | 기본값 | 설명 |
-|------|--------|------|
-| `model` | `azure/gpt-4.1` | 사용할 LLM 모델 (provider/model 형식) |
-| `max_analysts` | 3 | 생성할 분석가 수 |
-| `max_interview_turns` | 3 | 인터뷰 최대 턴 수 |
-| `tavily_max_results` | 3 | Tavily 검색 결과 수 |
-| `arxiv_max_docs` | 3 | ArXiv 검색 문서 수 |
-| `parallel_interviews` | `True` | 병렬 인터뷰 실행 여부 |
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `model` | `azure/gpt-4.1` | LLM model to use (provider/model format) |
+| `max_analysts` | 3 | Number of analysts to generate |
+| `max_interview_turns` | 3 | Maximum interview turns per analyst |
+| `tavily_max_results` | 3 | Number of Tavily search results |
+| `arxiv_max_docs` | 3 | Number of ArXiv documents to retrieve |
+| `parallel_interviews` | `True` | Whether to run interviews in parallel |
 
-#### 지원 모델
-- **Azure OpenAI**: `azure/gpt-4.1`, `azure/gpt-4o` 등
-- **OpenAI**: `openai/gpt-4`, `openai/gpt-4-turbo` 등
-- **Anthropic**: `anthropic/claude-3-5-sonnet-20240620` 등
+#### Supported Models
 
-## 📚 예제
+- **Azure OpenAI**: `azure/gpt-4.1`, `azure/gpt-4o`, `azure/gpt-4o-mini`
+- **OpenAI**: `openai/gpt-4`, `openai/gpt-4-turbo`, `openai/gpt-3.5-turbo`
+- **Anthropic**: `anthropic/claude-3-5-sonnet-20240620`, `anthropic/claude-3-opus-20240229`
 
-### 기술 리서치
+## 📚 Examples
+
+### Technology Research
+
 ```python
-topic = "차세대 AI 아키텍처: Transformer를 넘어서"
+topic = "Next-Generation AI Architectures: Beyond Transformers"
 ```
 
-### 비즈니스 분석
+Generated analysts might include:
+- AI Architecture Researcher
+- Hardware Optimization Expert
+- Industry Applications Specialist
+
+### Business Analysis
+
 ```python
-topic = "2024년 한국 스타트업 생태계 분석과 투자 트렌드"
+topic = "The Impact of AI on Global Supply Chain Management in 2024"
 ```
 
-### 학술 연구
+Generated analysts might include:
+- Supply Chain Expert
+- AI Technology Analyst
+- Business Strategy Consultant
+
+### Academic Research
+
 ```python
-topic = "양자 컴퓨팅이 암호화 기술에 미치는 영향"
+topic = "Quantum Error Correction Methods for Scalable Quantum Computing"
 ```
 
-## 🧪 테스트
+Generated analysts might include:
+- Quantum Physics Researcher
+- Error Correction Specialist
+- Hardware Implementation Expert
+
+## 🧪 Testing
 
 ```bash
-# 단위 테스트 실행
+# Run all tests
 make test
 
-# 특정 테스트 파일 실행
+# Run unit tests only
+python -m pytest tests/unit_tests/
+
+# Run specific test file
 make test TEST_FILE=tests/unit_tests/test_configuration.py
 
-# 통합 테스트
+# Run with coverage
+python -m pytest --cov=storm_research tests/
+
+# Run integration tests
 python -m pytest tests/integration_tests/
 ```
 
-## 📄 라이선스
+## 🤝 Contributing
 
-이 프로젝트는 MIT 라이선스를 따릅니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참고하세요.
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-## 🙏 References
+### Development Setup
 
-- Stanford의 STORM 논문에서 영감을 받았습니다
-- 출처: https://github.com/teddylee777/langchain-kr/blob/main/17-LangGraph/03-Use-Cases/10-LangGraph-Research-Assistant.ipynb
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Add tests for your changes
+5. Ensure all tests pass (`make test`)
+6. Run linting (`make lint`)
+7. Commit your changes (`git commit -m 'Add amazing feature'`)
+8. Push to the branch (`git push origin feature/amazing-feature`)
+9. Open a Pull Request
+
+### Code Style
+
+This project uses:
+- **Black** for code formatting
+- **isort** for import sorting
+- **flake8** for linting
+- **mypy** for type checking
+
+Run all checks with:
+```bash
+make lint
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Based on Stanford's STORM paper: [Assisting in Writing Wikipedia-like Articles From Scratch with Large Language Models](https://arxiv.org/abs/2402.14207)
+  - STORM achieves 25% better article organization and 10% broader topic coverage compared to baseline methods
+  - The methodology addresses challenges in pre-writing stages including topic research and outline preparation
+- Built with [LangGraph](https://langchain-ai.github.io/langgraph/) and [LangChain](https://python.langchain.com/)
+- Original implementation reference: [LangChain Korea Tutorial](https://github.com/teddylee777/langchain-kr/blob/main/17-LangGraph/03-Use-Cases/10-LangGraph-Research-Assistant.ipynb)
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/teddynote-lab/STORM-Research-Assistant/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/teddynote-lab/STORM-Research-Assistant/discussions)
+- **Documentation**: [Wiki](https://github.com/teddynote-lab/STORM-Research-Assistant/wiki)
+
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=teddynote-lab/STORM-Research-Assistant&type=Date)](https://star-history.com/#teddynote-lab/STORM-Research-Assistant&Date)
+
+---
+
+<p align="center">
+Made with ❤️ by the STORM Research Assistant Team
+</p>

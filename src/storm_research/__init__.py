@@ -1,4 +1,4 @@
-"""STORM 연구 보조 시스템 패키지"""
+"""STORM Research Assistant System Package"""
 
 from storm_research.graph import graph
 
