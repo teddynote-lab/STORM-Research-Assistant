@@ -280,7 +280,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   - STORM achieves 25% better article organization and 10% broader topic coverage compared to baseline methods
   - The methodology addresses challenges in pre-writing stages including topic research and outline preparation
 - Built with [LangGraph](https://langchain-ai.github.io/langgraph/) and [LangChain](https://python.langchain.com/)
-- Original implementation reference: [LangChain Korea Tutorial](https://github.com/teddylee777/langchain-kr/blob/main/17-LangGraph/03-Use-Cases/10-LangGraph-Research-Assistant.ipynb)
+- LangChain YouTube Channel: [Building STORM from scratch with LangGraph](https://youtu.be/1uUORSZwTz4?si=4RrM3UIuwwdWKFET)
 
 ## 📞 Support
 
